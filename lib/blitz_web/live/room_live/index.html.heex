@@ -1,0 +1,11 @@
+<span>
+  <.form
+    for={:room}
+    id="room-form"
+    phx-submit="create">
+
+    <div>
+      <%= submit "Create Room", phx_disable_with: "Creating..." %>
+    </div>
+  </.form>
+</span>

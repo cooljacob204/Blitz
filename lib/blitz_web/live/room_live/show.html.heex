@@ -1,0 +1,8 @@
+<h1>Show Room</h1>
+
+<ul>
+  <div><%= Helpers.Hashid.encode(@room.id) %></div>
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.room_show_path(@socket, :edit, @room), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.room_index_path(@socket, :index) %></span>

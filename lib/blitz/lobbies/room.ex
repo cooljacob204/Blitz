@@ -3,8 +3,6 @@ defmodule Blitz.Lobbies.Room do
   import Ecto.Changeset
 
   schema "rooms" do
-
-
     timestamps()
   end
 
@@ -12,6 +10,6 @@ defmodule Blitz.Lobbies.Room do
   def changeset(room, attrs) do
     room
     |> cast(attrs, [])
-    |> validate_required([])
+    # |> validate_required([])
   end
 end
