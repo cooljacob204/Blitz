@@ -2,8 +2,6 @@ defmodule BlitzWeb.RoomLive.Index do
   use BlitzWeb, :live_view
 
   alias Blitz.Lobbies
-  alias Blitz.Lobbies.Room
-  alias Blitz.Repo
 
   @impl true
   def mount(_params, _session, socket) do
@@ -17,10 +15,10 @@ defmodule BlitzWeb.RoomLive.Index do
 
   @impl true
   def handle_event("create", %{}, socket) do
-    room = Repo.insert!(%Room{}, returning: true)
+    {:ok, room} = Lobbies.create_room(%{})
 
     socket
-    |> assign(:page_title, room)
+    |> assign(:page_title, room.id)
 
     {:noreply, push_redirect(socket, to: Routes.room_show_path(socket, :show, Helpers.Hashid.encode(room.id)))}
   end

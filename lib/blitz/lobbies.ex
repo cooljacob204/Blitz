@@ -7,6 +7,7 @@ defmodule Blitz.Lobbies do
   alias Blitz.Repo
 
   alias Blitz.Lobbies.Room
+  alias Blitz.Lobbies.User
 
   @doc """
   Returns the list of rooms.
@@ -21,20 +22,15 @@ defmodule Blitz.Lobbies do
     Repo.all(Room)
   end
 
-  @doc """
-  Gets a single room.
+  def list_users(room) do
+    query =
+      from p in User,
+      order_by: [desc: p.inserted_at],
+      where: p.room_id == ^room.id
 
-  Raises `Ecto.NoResultsError` if the Room does not exist.
+    Repo.all(query)
+  end
 
-  ## Examples
-
-      iex> get_room!(123)
-      %Room{}
-
-      iex> get_room!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_room!(id), do: Repo.get!(Room, id)
 
   @doc """
@@ -53,6 +49,13 @@ defmodule Blitz.Lobbies do
     %Room{}
     |> Room.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create_user(attrs \\ %{}) do
+    %User{}
+    |> User.changeset(attrs)
+    |> Repo.insert()
+    |> broadcast(:user_created)
   end
 
   @doc """
@@ -100,5 +103,20 @@ defmodule Blitz.Lobbies do
   """
   def change_room(%Room{} = room, attrs \\ %{}) do
     Room.changeset(room, attrs)
+  end
+
+  def change_user(%User{} = user, attrs \\ %{}) do
+    User.changeset(user, attrs)
+  end
+
+  def subscribe(%Room{} = room) do
+    Phoenix.PubSub.subscribe(Blitz.PubSub, "room-#{room.id}")
+  end
+
+  defp broadcast({:error, _reason} = error, _event), do: error
+  defp broadcast({:ok, user}, event) do
+    Phoenix.PubSub.broadcast(Blitz.PubSub, "room-#{user.room_id}", {event, user})
+
+    {:ok, user}
   end
 end
