@@ -74,6 +74,7 @@ defmodule Blitz.Lobbies do
     room
     |> Room.changeset(attrs)
     |> Repo.update()
+    |> broadcast(:room_updated)
   end
 
   @doc """
@@ -114,9 +115,14 @@ defmodule Blitz.Lobbies do
   end
 
   defp broadcast({:error, _reason} = error, _event), do: error
-  defp broadcast({:ok, user}, event) do
+  defp broadcast({:ok, %User{} = user}, event) do
     Phoenix.PubSub.broadcast(Blitz.PubSub, "room-#{user.room_id}", {event, user})
 
     {:ok, user}
+  end
+  defp broadcast({:ok, %Room{} = room}, event) do
+    Phoenix.PubSub.broadcast(Blitz.PubSub, "room-#{room.id}", {event, room})
+
+    {:ok, room}
   end
 end

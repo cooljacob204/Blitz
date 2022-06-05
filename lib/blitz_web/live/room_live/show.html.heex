@@ -1,24 +1,30 @@
 <h1>Room: <%= Helpers.Hashid.encode(@room.id) %></h1>
 
-<%= if @user.id do %>
-  <h2><%= @user.name %></h2>
-  <%= live_component(BlitzWeb.RoomLive.Lobby, id: 'lobby', user: @user, users: @users) %>
-<% else %>
-  <.form
-    let={f}
-    for={@user_changeset}
-    phx-change="validate_user"
-    id="user-form"
-    phx-submit="create_user">
+<%= if @user == List.last(@users) do %>
+  <.live_component module={BlitzWeb.RoomLive.HostComponent} id="Host" room={@room}/>
+<% end %>
 
-    <%= label f, :name %>
-    <%= text_input f, :name %>
-    <%= error_tag f, :name %>
+<%= if @room.state == "lobby" do %>
+  <%= if @user.id do %>
+    <h2>Current User: <%= @user.name %></h2>
+    <.live_component module={BlitzWeb.RoomLive.LobbyComponent} id="lobby" user={@user} users={@users} />
+  <% else %>
+    <.form
+      let={f}
+      for={@user_changeset}
+      phx-change="validate_user"
+      id="user-form"
+      phx-submit="create_user">
 
-    <div>
-      <%= submit "Join Room", phx_disable_with: "Joining..." %>
-    </div>
-  </.form>
+      <%= label f, :name %>
+      <%= text_input f, :name %>
+      <%= error_tag f, :name %>
+
+      <div>
+        <%= submit "Join Room", phx_disable_with: "Joining..." %>
+      </div>
+    </.form>
+  <% end %>
 <% end %>
 
 <span><%= live_redirect "Back", to: Routes.room_index_path(@socket, :index) %></span>

@@ -1,4 +1,4 @@
-defmodule BlitzWeb.RoomLive.Lobby do
+defmodule BlitzWeb.RoomLive.LobbyComponent do
   use BlitzWeb, :live_component
 
   def render(assigns) do

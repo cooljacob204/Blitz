@@ -15,6 +15,7 @@ defmodule Blitz.Lobbies.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:name, :room_id])
+    |> unique_constraint([:name, :room_id])
     |> validate_required([:name, :room_id])
   end
 end
