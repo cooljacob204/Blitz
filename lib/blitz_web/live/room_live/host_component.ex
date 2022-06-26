@@ -14,8 +14,11 @@ defmodule BlitzWeb.RoomLive.HostComponent do
   end
 
   def handle_event("start_game", _value, socket) do
-    Lobbies.update_room(Lobbies.get_room!(socket.assigns.room.id), %{state: "game"})
+    room = Lobbies.get_room!(socket.assigns.room.id)
+    Lobbies.update_room(room, %{state: "game"})
+    Lobbies.create_round( %{"room_id" => room.id})
 
-    {:noreply, socket}
+    {:noreply,
+     socket}
   end
 end

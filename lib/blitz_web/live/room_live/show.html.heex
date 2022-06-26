@@ -7,7 +7,7 @@
 <%= if @room.state == "lobby" do %>
   <%= if @user.id do %>
     <h2>Current User: <%= @user.name %></h2>
-    <.live_component module={BlitzWeb.RoomLive.LobbyComponent} id="lobby" user={@user} users={@users} />
+    <.live_component module={BlitzWeb.RoomLive.LobbyComponent} id="lobby" user={@user} users={@users}/>
   <% else %>
     <.form
       let={f}
@@ -24,6 +24,12 @@
         <%= submit "Join Room", phx_disable_with: "Joining..." %>
       </div>
     </.form>
+  <% end %>
+<% end %>
+
+<%= if @room.state == "game" && @round do %>
+  <%= if @user.id do %>
+    <.live_component module={BlitzWeb.RoomLive.ScoreFormComponent} id="score-form" user={@user} room={@room} round={@round}/>
   <% end %>
 <% end %>
 

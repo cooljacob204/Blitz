@@ -8,6 +8,8 @@ defmodule Blitz.Lobbies do
 
   alias Blitz.Lobbies.Room
   alias Blitz.Lobbies.User
+  alias Blitz.Lobbies.Round
+  alias Blitz.Lobbies.Score
 
   @doc """
   Returns the list of rooms.
@@ -29,6 +31,24 @@ defmodule Blitz.Lobbies do
       where: p.room_id == ^room.id
 
     Repo.all(query)
+  end
+
+  def list_scores(round) do
+    query =
+      from p in Score,
+      order_by: [desc: p.inserted_at],
+      where: p.round_id == ^round.id
+
+    Repo.all(query)
+  end
+
+  def latest_round(room) do
+    query =
+      from p in Round,
+      order_by: [desc: p.inserted_at],
+      where: p.room_id == ^room.id
+
+    Repo.one(query)
   end
 
   def get_room!(id), do: Repo.get!(Room, id)
@@ -56,6 +76,20 @@ defmodule Blitz.Lobbies do
     |> User.changeset(attrs)
     |> Repo.insert()
     |> broadcast(:user_created)
+  end
+
+  def create_round(attrs \\ %{}) do
+    %Round{}
+    |> Round.changeset(attrs)
+    |> Repo.insert()
+    |> broadcast(:round_created)
+  end
+
+  def create_score(attrs \\ %{}) do
+    %Score{}
+    |> Score.changeset(attrs)
+    |> Repo.insert()
+    |> broadcast(:score_created)
   end
 
   @doc """
@@ -110,6 +144,10 @@ defmodule Blitz.Lobbies do
     User.changeset(user, attrs)
   end
 
+  def change_score(%Score{} = score, attrs \\ %{}) do
+    Score.changeset(score, attrs)
+  end
+
   def subscribe(%Room{} = room) do
     Phoenix.PubSub.subscribe(Blitz.PubSub, "room-#{room.id}")
   end
@@ -124,5 +162,16 @@ defmodule Blitz.Lobbies do
     Phoenix.PubSub.broadcast(Blitz.PubSub, "room-#{room.id}", {event, room})
 
     {:ok, room}
+  end
+  defp broadcast({:ok, %Round{} = round}, event) do
+    Phoenix.PubSub.broadcast(Blitz.PubSub, "room-#{round.room_id}", {event, round})
+
+    {:ok, round}
+  end
+  defp broadcast({:ok, %Score{} = score}, event) do
+    round = Repo.get(Round, score.round_id)
+    Phoenix.PubSub.broadcast(Blitz.PubSub, "room-#{round.room_id}", {event, score})
+
+    {:ok, score}
   end
 end
