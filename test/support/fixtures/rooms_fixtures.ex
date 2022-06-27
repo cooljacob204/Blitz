@@ -1,7 +1,7 @@
-defmodule Blitz.GamesFixtures do
+defmodule Blitz.RoomsFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `Blitz.Games` context.
+  entities via the `Blitz.Rooms` context.
   """
 
   @doc """
@@ -13,7 +13,7 @@ defmodule Blitz.GamesFixtures do
       |> Enum.into(%{
 
       })
-      |> Blitz.Games.create_room()
+      |> Blitz.Rooms.create_room()
 
     room
   end

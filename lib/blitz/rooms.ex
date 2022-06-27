@@ -1,15 +1,15 @@
-defmodule Blitz.Games do
+defmodule Blitz.Rooms do
   @moduledoc """
-  The Games context.
+  The Rooms context.
   """
 
   import Ecto.Query, warn: false
   alias Blitz.Repo
 
-  alias Blitz.Games.Room
-  alias Blitz.Games.User
-  alias Blitz.Games.Round
-  alias Blitz.Games.Score
+  alias Blitz.Rooms.Room
+  alias Blitz.Rooms.User
+  alias Blitz.Rooms.Round
+  alias Blitz.Rooms.Score
 
   @doc """
   Returns the list of rooms.

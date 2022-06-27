@@ -1,57 +1,57 @@
-defmodule Blitz.GamesTest do
+defmodule Blitz.RoomsTest do
   use Blitz.DataCase
 
-  alias Blitz.Games
+  alias Blitz.Rooms
 
   describe "rooms" do
-    alias Blitz.Games.Room
+    alias Blitz.Rooms.Room
 
-    import Blitz.GamesFixtures
+    import Blitz.RoomsFixtures
 
     @invalid_attrs %{}
 
     test "list_rooms/0 returns all rooms" do
       room = room_fixture()
-      assert Games.list_rooms() == [room]
+      assert Rooms.list_rooms() == [room]
     end
 
     test "get_room!/1 returns the room with given id" do
       room = room_fixture()
-      assert Games.get_room!(room.id) == room
+      assert Rooms.get_room!(room.id) == room
     end
 
     test "create_room/1 with valid data creates a room" do
       valid_attrs = %{}
 
-      assert {:ok, %Room{} = room} = Games.create_room(valid_attrs)
+      assert {:ok, %Room{} = room} = Rooms.create_room(valid_attrs)
     end
 
     test "create_room/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Games.create_room(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Rooms.create_room(@invalid_attrs)
     end
 
     test "update_room/2 with valid data updates the room" do
       room = room_fixture()
       update_attrs = %{}
 
-      assert {:ok, %Room{} = room} = Games.update_room(room, update_attrs)
+      assert {:ok, %Room{} = room} = Rooms.update_room(room, update_attrs)
     end
 
     test "update_room/2 with invalid data returns error changeset" do
       room = room_fixture()
-      assert {:error, %Ecto.Changeset{}} = Games.update_room(room, @invalid_attrs)
-      assert room == Games.get_room!(room.id)
+      assert {:error, %Ecto.Changeset{}} = Rooms.update_room(room, @invalid_attrs)
+      assert room == Rooms.get_room!(room.id)
     end
 
     test "delete_room/1 deletes the room" do
       room = room_fixture()
-      assert {:ok, %Room{}} = Games.delete_room(room)
-      assert_raise Ecto.NoResultsError, fn -> Games.get_room!(room.id) end
+      assert {:ok, %Room{}} = Rooms.delete_room(room)
+      assert_raise Ecto.NoResultsError, fn -> Rooms.get_room!(room.id) end
     end
 
     test "change_room/1 returns a room changeset" do
       room = room_fixture()
-      assert %Ecto.Changeset{} = Games.change_room(room)
+      assert %Ecto.Changeset{} = Rooms.change_room(room)
     end
   end
 end

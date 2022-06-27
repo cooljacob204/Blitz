@@ -1,7 +1,7 @@
 defmodule BlitzWeb.RoomControllerTest do
   use BlitzWeb.ConnCase
 
-  import Blitz.GamesFixtures
+  import Blitz.RoomsFixtures
 
   @create_attrs %{}
   @update_attrs %{}

@@ -1,7 +1,7 @@
 defmodule BlitzWeb.RoomLive.HostComponent do
   use BlitzWeb, :live_component
 
-  alias Blitz.Games
+  alias Blitz.Rooms
 
   def render(assigns) do
     ~H"""
@@ -14,9 +14,9 @@ defmodule BlitzWeb.RoomLive.HostComponent do
   end
 
   def handle_event("start_game", _value, socket) do
-    room = Games.get_room!(socket.assigns.room.id)
-    Games.update_room(room, %{state: "game"})
-    Games.create_round( %{"room_id" => room.id})
+    room = Rooms.get_room!(socket.assigns.room.id)
+    Rooms.update_room(room, %{state: "game"})
+    Rooms.create_round( %{"room_id" => room.id})
 
     {:noreply,
      socket}

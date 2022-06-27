@@ -1,8 +1,8 @@
 defmodule BlitzWeb.RoomLive.Show do
   use BlitzWeb, :live_view
   import Phoenix.LiveView.Helpers
-  alias Blitz.Games
-  alias Blitz.Games.User
+  alias Blitz.Rooms
+  alias Blitz.Rooms.User
 
   @impl true
   def mount(_params, _session, socket) do
@@ -11,9 +11,9 @@ defmodule BlitzWeb.RoomLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    room = Games.get_room!(Enum.at(Helpers.Hashid.decode(id), 0))
+    room = Rooms.get_room!(Enum.at(Helpers.Hashid.decode(id), 0))
 
-    if connected?(socket), do: Games.subscribe(room)
+    if connected?(socket), do: Rooms.subscribe(room)
 
     {
       :noreply,
@@ -21,9 +21,9 @@ defmodule BlitzWeb.RoomLive.Show do
       |> assign(:page_title, page_title(socket.assigns.live_action))
       |> assign(:room, room)
       |> assign(:user, %User{})
-      |> assign(:user_changeset, Games.change_user(%User{}))
-      |> assign(:users, Games.list_users(room))
-      |> assign(:round, Games.latest_round(room))
+      |> assign(:user_changeset, Rooms.change_user(%User{}))
+      |> assign(:users, Rooms.list_users(room))
+      |> assign(:round, Rooms.latest_round(room))
     }
   end
 
@@ -31,14 +31,14 @@ defmodule BlitzWeb.RoomLive.Show do
   def handle_event("validate_user", %{"user" => params}, socket) do
     changeset =
       %User{}
-      |> Games.change_user(params)
+      |> Rooms.change_user(params)
       |> Map.put(:action, :insert)
     {:noreply,
      socket
      |> assign(user_changeset: changeset )}
   end
   def handle_event("create_user", %{"user" => params}, socket) do
-    user_created(Games.create_user(Map.merge(params, %{"room_id" => socket.assigns.room.id})), socket)
+    user_created(Rooms.create_user(Map.merge(params, %{"room_id" => socket.assigns.room.id})), socket)
   end
 
   defp user_created({:ok, user}, socket) do
@@ -69,7 +69,7 @@ defmodule BlitzWeb.RoomLive.Show do
     {:noreply,
      socket
      |> assign(:round, round)
-     |> assign(:scores, Games.list_scores(round))}
+     |> assign(:scores, Rooms.list_scores(round))}
   end
   def handle_info({:score_created, score}, socket) do
     {:noreply,
