@@ -59,7 +59,7 @@ defmodule BlitzWeb.RoomLive.ScoreFormComponent do
      socket
      |> assign(score_changeset: changeset )}
   end
-require Logger
+
   defp score_created({:ok, score}, socket) do
     {:noreply,
       socket
@@ -67,7 +67,6 @@ require Logger
       |> assign(score_changeset: nil )}
   end
   defp score_created({:error, changeset}, socket) do
-    Logger.debug "Var value: #{inspect(changeset)}"
     {:noreply,
       socket
       |> assign(score_changeset: changeset )}
