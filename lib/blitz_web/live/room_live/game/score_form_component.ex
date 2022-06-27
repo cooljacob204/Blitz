@@ -7,10 +7,7 @@ defmodule BlitzWeb.RoomLive.Game.ScoreFormComponent do
   def render(assigns) do
     ~H"""
       <div>
-        <%= if @score do %>
-          <%= @score.blitz_count %>
-          <%= @score.hand_count %>
-        <% else %>
+        <%= unless @score do %>
           <.form
             let={f}
             for={@score_changeset}

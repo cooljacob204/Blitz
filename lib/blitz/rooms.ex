@@ -55,18 +55,10 @@ defmodule Blitz.Rooms do
   def get_user!(id), do: Repo.get!(User, id)
   def get_score(user_id, round_id), do: Repo.get_by(Score, [user_id: user_id, round_id: round_id])
 
-  @doc """
-  Creates a room.
+  def calculate_score(blitz_count, hand_count) do
+    40 - blitz_count + hand_count - (2 * blitz_count)
+  end
 
-  ## Examples
-
-      iex> create_room(%{field: value})
-      {:ok, %Room{}}
-
-      iex> create_room(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_room(attrs \\ %{}) do
     %Room{}
     |> Room.changeset(attrs)
