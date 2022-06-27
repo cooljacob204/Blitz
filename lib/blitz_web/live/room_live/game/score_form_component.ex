@@ -1,8 +1,9 @@
-defmodule BlitzWeb.RoomLive.ScoreFormComponent do
+defmodule BlitzWeb.RoomLive.Game.ScoreFormComponent do
   use BlitzWeb, :live_component
   alias Blitz.Rooms
   alias Blitz.Rooms.Score
 
+  @impl true
   def render(assigns) do
     ~H"""
       <div>
@@ -35,10 +36,10 @@ defmodule BlitzWeb.RoomLive.ScoreFormComponent do
     """
   end
 
-  def update(assigns, socket) do
+  @impl true
+  def mount(socket) do
     {:ok,
      socket
-     |> assign(assigns)
      |> assign_score_changeset()
      |> assign(score: nil)}
   end
@@ -47,6 +48,7 @@ defmodule BlitzWeb.RoomLive.ScoreFormComponent do
     assign(socket, :score_changeset, Score.changeset(%Score{}, %{}))
   end
 
+  @impl true
   def handle_event("create_score", %{"score" => params},  %{assigns: %{user: user, round: round}} = socket) do
     score_created(Rooms.create_score(Map.merge(%{"round_id" => round.id, "user_id" => user.id}, params)), socket)
   end

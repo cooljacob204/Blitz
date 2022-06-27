@@ -27,9 +27,16 @@
   <% end %>
 <% end %>
 
-<%= if @room.state == "game" && @round do %>
+<%= if @room.state == "game" do %>
   <%= if @user.id do %>
-    <.live_component module={BlitzWeb.RoomLive.ScoreFormComponent} id="score-form" user={@user} room={@room} round={@round}/>
+    <.live_component module={BlitzWeb.RoomLive.GameComponent} id="game" users={@users} user={@user} room={@room}/>
+  <% else %>
+    <h2>Please select a user to re-join as: </h2>
+    <div style='display: flexbox'>
+      <%= for user <- @users do %>
+        <button phx-click="rejoin_user" value={user.id}><%= user.name %></button>
+      <% end %>
+    </div>
   <% end %>
 <% end %>
 

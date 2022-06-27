@@ -23,7 +23,6 @@ defmodule BlitzWeb.RoomLive.Show do
       |> assign(:user, %User{})
       |> assign(:user_changeset, Rooms.change_user(%User{}))
       |> assign(:users, Rooms.list_users(room))
-      |> assign(:round, Rooms.latest_round(room))
     }
   end
 
@@ -39,6 +38,14 @@ defmodule BlitzWeb.RoomLive.Show do
   end
   def handle_event("create_user", %{"user" => params}, socket) do
     user_created(Rooms.create_user(Map.merge(params, %{"room_id" => socket.assigns.room.id})), socket)
+  end
+  def handle_event("rejoin_user", %{"value" => id}, socket) do
+    user = Rooms.get_user!(id)
+
+    {:noreply,
+      socket
+      |> assign(user: user )
+      |> assign(user_changeset: nil )}
   end
 
   defp user_created({:ok, user}, socket) do
@@ -64,15 +71,5 @@ defmodule BlitzWeb.RoomLive.Show do
   def handle_info({:room_updated, room}, socket) do
     {:noreply,
     assign(socket, :room, room)}
-  end
-  def handle_info({:round_created, round}, socket) do
-    {:noreply,
-     socket
-     |> assign(:round, round)
-     |> assign(:scores, Rooms.list_scores(round))}
-  end
-  def handle_info({:score_created, score}, socket) do
-    {:noreply,
-    update(socket, :scores, fn scores -> [score | scores] end)}
   end
 end

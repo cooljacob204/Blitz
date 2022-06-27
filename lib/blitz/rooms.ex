@@ -42,16 +42,17 @@ defmodule Blitz.Rooms do
     Repo.all(query)
   end
 
-  def latest_round(room) do
+  def list_rounds(room) do
     query =
       from p in Round,
       order_by: [desc: p.inserted_at],
       where: p.room_id == ^room.id
 
-    Repo.one(query)
+    Repo.all(query)
   end
 
   def get_room!(id), do: Repo.get!(Room, id)
+  def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
   Creates a room.
@@ -152,6 +153,10 @@ defmodule Blitz.Rooms do
     Phoenix.PubSub.subscribe(Blitz.PubSub, "room-#{room.id}")
   end
 
+  def subscribe_game(%Room{} = room) do
+    Phoenix.PubSub.subscribe(Blitz.PubSub, "room-#{room.id}-game")
+  end
+
   defp broadcast({:error, _reason} = error, _event), do: error
   defp broadcast({:ok, %User{} = user}, event) do
     Phoenix.PubSub.broadcast(Blitz.PubSub, "room-#{user.room_id}", {event, user})
@@ -164,13 +169,13 @@ defmodule Blitz.Rooms do
     {:ok, room}
   end
   defp broadcast({:ok, %Round{} = round}, event) do
-    Phoenix.PubSub.broadcast(Blitz.PubSub, "room-#{round.room_id}", {event, round})
+    Phoenix.PubSub.broadcast(Blitz.PubSub, "room-#{round.room_id}-game", {event, round})
 
     {:ok, round}
   end
   defp broadcast({:ok, %Score{} = score}, event) do
     round = Repo.get(Round, score.round_id)
-    Phoenix.PubSub.broadcast(Blitz.PubSub, "room-#{round.room_id}", {event, score})
+    Phoenix.PubSub.broadcast(Blitz.PubSub, "room-#{round.room_id}-game", {event, score})
 
     {:ok, score}
   end
