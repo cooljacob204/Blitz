@@ -2,7 +2,7 @@ defmodule BlitzWeb.RoomLiveTest do
   use BlitzWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Blitz.LobbiesFixtures
+  import Blitz.GamesFixtures
 
   @create_attrs %{}
   @update_attrs %{}

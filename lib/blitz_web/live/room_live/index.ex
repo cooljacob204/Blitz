@@ -1,7 +1,7 @@
 defmodule BlitzWeb.RoomLive.Index do
   use BlitzWeb, :live_view
 
-  alias Blitz.Lobbies
+  alias Blitz.Games
 
   @impl true
   def mount(_params, _session, socket) do
@@ -15,7 +15,7 @@ defmodule BlitzWeb.RoomLive.Index do
 
   @impl true
   def handle_event("create", %{}, socket) do
-    {:ok, room} = Lobbies.create_room(%{})
+    {:ok, room} = Games.create_room(%{})
 
     socket
     |> assign(:page_title, room.id)
@@ -26,7 +26,7 @@ defmodule BlitzWeb.RoomLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Room")
-    |> assign(:room, Lobbies.get_room!(id))
+    |> assign(:room, Games.get_room!(id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -42,6 +42,6 @@ defmodule BlitzWeb.RoomLive.Index do
   end
 
   defp list_rooms do
-    Lobbies.list_rooms()
+    Games.list_rooms()
   end
 end

@@ -1,8 +1,8 @@
-defmodule Blitz.Lobbies.User do
+defmodule Blitz.Games.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Blitz.Lobbies.Room
+  alias Blitz.Games.Room
 
   schema "users" do
     field :name, :string

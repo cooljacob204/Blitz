@@ -1,9 +1,9 @@
-defmodule Blitz.Lobbies.Round do
+defmodule Blitz.Games.Round do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Blitz.Lobbies.Room
-  alias Blitz.Lobbies.Score
+  alias Blitz.Games.Room
+  alias Blitz.Games.Score
 
   schema "rounds" do
     belongs_to :room, Room
