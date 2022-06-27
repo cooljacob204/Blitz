@@ -44,6 +44,15 @@ defmodule BlitzWeb.RoomLive.Game.ScoreFormComponent do
      |> assign(score: nil)}
   end
 
+  @impl true
+  def update(assigns, socket) do
+    score = Rooms.get_score(assigns.user.id, assigns.round.id)
+    {:ok,
+     socket
+     |> assign(assigns)
+     |> assign(score: score)}
+  end
+
   def assign_score_changeset(socket) do
     assign(socket, :score_changeset, Score.changeset(%Score{}, %{}))
   end

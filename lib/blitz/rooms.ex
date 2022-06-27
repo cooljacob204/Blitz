@@ -53,6 +53,7 @@ defmodule Blitz.Rooms do
 
   def get_room!(id), do: Repo.get!(Room, id)
   def get_user!(id), do: Repo.get!(User, id)
+  def get_score(user_id, round_id), do: Repo.get_by(Score, [user_id: user_id, round_id: round_id])
 
   @doc """
   Creates a room.

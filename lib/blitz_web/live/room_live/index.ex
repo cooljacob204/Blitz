@@ -5,7 +5,7 @@ defmodule BlitzWeb.RoomLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :rooms, list_rooms())}
+    {:ok, socket}
   end
 
   @impl true
@@ -39,9 +39,5 @@ defmodule BlitzWeb.RoomLive.Index do
     socket
     |> assign(:page_title, "Listing Rooms")
     |> assign(:room, nil)
-  end
-
-  defp list_rooms do
-    Rooms.list_rooms()
   end
 end

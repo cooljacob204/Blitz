@@ -29,7 +29,8 @@
 
 <%= if @room.state == "game" do %>
   <%= if @user.id do %>
-    <.live_component module={BlitzWeb.RoomLive.GameComponent} id="game" users={@users} user={@user} room={@room}/>
+    <%# <.live_component module={BlitzWeb.RoomLive.GameComponent} id="game" users={@users} user={@user} room={@room}/> %>
+    <%= live_render(@socket, BlitzWeb.RoomLive.Game, id: "game", session: %{"user_id" => @user.id, "room_id" => @room.id}) %>
   <% else %>
     <h2>Please select a user to re-join as: </h2>
     <div style='display: flexbox'>
