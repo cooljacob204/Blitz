@@ -1,4 +1,9 @@
 <div>
-  <.live_component module={BlitzWeb.RoomLive.Game.ScoreFormComponent} id="score-form" user={@user} room={@room} round={List.first(@rounds)}/>
-  <.live_component module={BlitzWeb.RoomLive.Game.CurrentRoundComponent} id="current-round" users={@users} scores={@scores}/>
+  <%= if @winner do %>
+    <h1>Winner is:  <%= @winner.name %>!!!</h1>
+  <% else %>
+    <div>Current Round: <%= length(@rounds) %></div>
+    <.live_component module={BlitzWeb.RoomLive.Game.ScoreFormComponent} id="score-form" user={@user} room={@room} round={List.first(@rounds)} users={@users}/>
+    <.live_component module={BlitzWeb.RoomLive.Game.CurrentRoundComponent} id="current-round" users={@users} round={List.first(@rounds)}/>
+  <% end %>
 </div>

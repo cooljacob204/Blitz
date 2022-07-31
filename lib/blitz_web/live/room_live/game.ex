@@ -7,7 +7,6 @@ defmodule BlitzWeb.RoomLive.Game do
     room = Rooms.get_room!(room_id)
     users = Rooms.list_users(room)
     rounds = Rooms.list_rounds(room)
-    scores = Rooms.list_scores(List.first(rounds))
 
     if connected?(socket), do: Rooms.subscribe_game(room)
 
@@ -16,12 +15,29 @@ defmodule BlitzWeb.RoomLive.Game do
       |> assign(:user, user)
       |> assign(:room, room)
       |> assign(:users, users)
-      |> assign(rounds: rounds)
-      |> assign(scores: scores)}
+      |> assign(:rounds, rounds)
+      |> assign(:winner, nil)}
   end
 
   def handle_info({:score_created, score}, socket) do
+    [head | tail] = socket.assigns.rounds
+    round = %{head | scores: [score | head.scores]}
+
     {:noreply,
-      update(socket, :scores, fn scores -> [score | scores] end)}
+      assign(socket, :rounds, [round | tail])}
+  end
+  def handle_info({:round_created, round}, socket) do
+    Process.send_after(self(), :remove_winner, 4000)
+    prev_round = List.first(socket.assigns.rounds)
+    winning_score = Enum.max_by(prev_round.scores, fn score -> Rooms.calculate_score(score.blitz_count, score.hand_count) end)
+    winner = Enum.find(socket.assigns.users, fn user -> user.id == winning_score.user_id end)
+
+    {:noreply,
+      socket
+      |> assign(:winner, winner)
+      |> update(:rounds, fn rounds -> [round | rounds] end)}
+  end
+  def handle_info(:remove_winner, socket) do
+    {:noreply, assign(socket, :winner, nil)}
   end
 end

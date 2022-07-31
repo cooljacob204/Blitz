@@ -48,7 +48,7 @@ defmodule Blitz.Rooms do
       order_by: [desc: p.inserted_at],
       where: p.room_id == ^room.id
 
-    Repo.all(query)
+    Repo.all(query) |> Repo.preload(:scores)
   end
 
   def get_room!(id), do: Repo.get!(Room, id)
@@ -162,7 +162,7 @@ defmodule Blitz.Rooms do
     {:ok, room}
   end
   defp broadcast({:ok, %Round{} = round}, event) do
-    Phoenix.PubSub.broadcast(Blitz.PubSub, "room-#{round.room_id}-game", {event, round})
+    Phoenix.PubSub.broadcast(Blitz.PubSub, "room-#{round.room_id}-game", {event, Repo.preload(round, :scores)})
 
     {:ok, round}
   end

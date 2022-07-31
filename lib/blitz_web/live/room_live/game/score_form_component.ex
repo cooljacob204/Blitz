@@ -43,11 +43,17 @@ defmodule BlitzWeb.RoomLive.Game.ScoreFormComponent do
 
   @impl true
   def update(assigns, socket) do
-    score = Rooms.get_score(assigns.user.id, assigns.round.id)
+    # unless Map.has_key?(assigns, :score), do: assign(socket, :score, Rooms.get_score(assigns.user.id, assigns.round.id))
+    # assign(socket, :score, Rooms.get_score(assigns.user.id, assigns.round.id))
+    socket = if Map.has_key?(assigns, :score) do
+      socket
+    else
+      assign(socket, :score, Rooms.get_score(assigns.user.id, assigns.round.id))
+    end
+
     {:ok,
      socket
-     |> assign(assigns)
-     |> assign(score: score)}
+     |> assign(assigns)}
   end
 
   def assign_score_changeset(socket) do
@@ -69,14 +75,21 @@ defmodule BlitzWeb.RoomLive.Game.ScoreFormComponent do
   end
 
   defp score_created({:ok, score}, socket) do
+    score_to_assign = if length(socket.assigns.round.scores) + 1 == length(socket.assigns.users) do
+      Rooms.create_round(%{"room_id" => socket.assigns.room.id})
+      nil
+    else
+      score
+    end
+
     {:noreply,
       socket
-      |> assign(score: score )
-      |> assign(score_changeset: nil )}
+      |> assign(score: score_to_assign)
+      |> assign(score_changeset: Score.changeset(%Score{}, %{}))}
   end
   defp score_created({:error, changeset}, socket) do
     {:noreply,
       socket
-      |> assign(score_changeset: changeset )}
+      |> assign(score_changeset: changeset)}
   end
 end
