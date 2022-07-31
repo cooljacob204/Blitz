@@ -32,7 +32,7 @@ defmodule BlitzWeb.RoomLive.Game do
     winning_score = Enum.max_by(prev_round.scores, fn score -> Rooms.calculate_score(score.blitz_count, score.hand_count) end)
     winning_user = Enum.find(socket.assigns.users, fn user -> user.id == winning_score.user_id end)
 
-    winner = %{user: winning_user, score: winning_score, round: prev_round}
+    winner = %{user: winning_user, score: winning_score, rounds: socket.assigns.rounds}
 
     {:noreply,
       socket
