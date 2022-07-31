@@ -56,7 +56,7 @@ defmodule Blitz.Rooms do
   def get_score(user_id, round_id), do: Repo.get_by(Score, [user_id: user_id, round_id: round_id])
 
   def calculate_score(blitz_count, hand_count) do
-    40 - blitz_count + hand_count - (2 * blitz_count)
+    (40 - (blitz_count + hand_count)) - (2 * blitz_count)
   end
 
   def create_room(attrs \\ %{}) do
